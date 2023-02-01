@@ -11,6 +11,8 @@
 const express = require('express');
 const router = express.Router();
 const { Videogame, Genero } = require('../db');
+const createVideogameWithGenre = require('../controlers/index');
+const axios = require('axios');
 
 
 router.get('/videogames', async (req, res) => {
@@ -24,10 +26,17 @@ router.get('/videogames', async (req, res) => {
         where: {
           name
         },
+        include: [{
+            model: Genero,
+            }],
         limit: 15
       });
     } else {
-      games = await Videogame.findAll();
+      games = await Videogame.findAll({
+        include: [{
+        model: Genero,
+        }],
+        });
     }
   
     if (!games.length) {
@@ -108,14 +117,16 @@ router.get('/videogames', async (req, res) => {
 
 
 router.post('/videogames', async (req, res) => {
-    const { name, description, plataformas } = req.body; //ojo no estoy poniendo genres por ahora
+    const { name, description, plataformas, genero } = req.body; //el genero viene x name sin chequeo de q puede venir accion, acion o acción y son 3 generos #...
     //console.log("name>>> ",name);
-    const game = new Videogame({ name, description, plataformas }); //ojo no estoy poniendo genres por ahora
-    console.log("game >>>>", game);
+    const game = new Videogame({ name, description, plataformas }); //si lo mando con genero no lo tengo q crer aqui o si?
+
+    //console.log("game >>>>", game);
     //const game = Videogame.build({ name, description, plataformas }); //ojo no estoy poniendo genres por ahora
   
     try {
-      await game.save();
+        await createVideogameWithGenre(game, genero); // aqui va sin el await pq lo tengo en la funcion createVideogameWithGenre?
+      //await game.save(); // al parecer aqui no....
       res.send({ message: 'Videojuego creado con éxito' });
     } catch (err) {
       res.status(500).send({ message: err });

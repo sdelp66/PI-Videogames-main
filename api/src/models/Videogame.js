@@ -50,6 +50,7 @@
   apiId: {
     type: DataTypes.INTEGER,
   },
+
 });
 }
 
