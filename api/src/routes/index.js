@@ -18,12 +18,13 @@ const axios = require('axios');
 
 router.get('/videogames', async (req, res) => {
   const { name } = req.query;
-  let games;
 
-  console.log("name>>>> ", name);
+  let gamesDBprom, responseAPIprom, responseAPIprom2, responseAPIprom3;
+
+  //console.log("name>>>> ", name);
 
   if (name) {
-    games = await Videogame.findAll({
+    gamesDBprom = await Videogame.findAll({
       where: {
         name
       },
@@ -32,87 +33,129 @@ router.get('/videogames', async (req, res) => {
       }],
       limit: 15
     });
+    responseAPIprom = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page_size=15&search=${name}`);
+    //externalData = response.data.results;
   } else {
-    games = await Videogame.findAll({
+    gamesDBprom = await Videogame.findAll({
       include: [{
         model: Genero,
       }],
     });
+    responseAPIprom = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page_size=40`); //ojo aqui a pesar del pagesize de 100 viene solo 40 entonces hay q pedir otras pages para llegar a 100... (1 + de 40 y otra de 20?) 
+    responseAPIprom2 = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page=2&page_size=40`); //ojo aqui a pesar del pagesize de 100 viene solo 40 entonces hay q pedir otras pages para llegar a 100... (1 + de 40 y otra de 20?) 
+    responseAPIprom3 = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page=3&page_size=20`); //quien dice 100 dice 100 40+40+20...
+    //externalData = response.data.results;
+  }
+  
+  let gamesDB, responseAPI, responseAPI2,responseAPI3;
+  let externalDataAPI = [];
+  if (responseAPIprom2 === undefined) { 
+     [gamesDB, responseAPI] = await Promise.all([gamesDBprom, responseAPIprom]);
+     externalDataAPI = responseAPI.data.results;
+  }else {
+     [gamesDB, responseAPI, responseAPI2, responseAPI3 ] = await Promise.all([gamesDBprom, responseAPIprom, responseAPIprom2, responseAPIprom3]);
+     externalDataAPI = externalDataAPI.concat(responseAPI.data.results,responseAPI2.data.results, responseAPI3.data.results );
+  }
+  
+  //externalDataAPI = externalDataAPI.concat(responseAPI.data.results,responseAPI2.data.results, responseAPI3.data.results );
+  //responseAPI.data.results; //aqui vienen mmmuuuuuuuchos datos solo necesito los de la ruta ppal...
+
+  if (!gamesDB.length && !externalDataAPI.length) {
+    return res.status(404).send({ message: 'No se encontraron videojuegos' });
   }
 
-//   if (!games.length) {
-//     return res.status(404).send({ message: 'No se encontraron videojuegos' });
-//   }
+  const gamesAPI = externalDataAPI.map(vg => ({
+    id: vg.id,
+    name: vg.name,
+    imagen: vg.background_image,
+    generos: vg.genres,
+    //description: vg. //estos en el ppal no hacen falta,,,
+    // fechaLanzamiento: vg.released,
+    // rating: vg.rating,
+    // plataformas: vg.plataforms
+  }))
 
-  const response = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page_size=15&search=${name}`);
-  const externalData = response.data.results;
 
-  res.send({ games, externalData });
+  /**
+ * Ruta de detalle de videojuego: debe contener
+
+[ ] Los campos mostrados en la ruta principal para cada videojuegos (imagen, nombre, y géneros)
+[ ] Descripción
+[ ] Fecha de lanzamiento
+[ ] Rating
+[ ] Plataformas
+ */
+const cantidadJuegosAPI= gamesAPI.length;
+
+console.log("cantidadJuegosAPI >>>>>>>>>>",cantidadJuegosAPI);
+
+let todosJuntos = [];
+
+todosJuntos = todosJuntos.concat(gamesDB,gamesAPI);
+
+
+
+  res.send({ todosJuntos, cantidadJuegosAPI});
+
+  
 });
 
 
-// router.get('/videogames', async (req, res) => {
-//     const { name } = req.query;
-//     let games;
-
-//     console.log("name>>>> ", name);
-  
-//     if (name) {
-//       games = await Videogame.findAll({
-//         where: {
-//           name
-//         },
-//         include: [{
-//             model: Genero,
-//             }],
-//         limit: 15
-//       });
-//     } else {
-//       games = await Videogame.findAll({
-//         include: [{
-//         model: Genero,
-//         }],
-//         });
-//     }
-  
-//     if (!games.length) {
-//       return res.status(404).send({ message: 'No se encontraron videojuegos' });
-//     }
-  
-//     res.send(games);
-//   });
-
-// // GET /videogames?name="..."
-// router.get('/videogames', (req, res) => {
-//   const name = req.query.name;
-//   if (!name) {
-//     return res.status(400).json({ error: 'Missing required parameter "name".' });
-//   }
-
-//   Videogame.findAll({
-//     where: {
-//       nombre: {
-//         [Op.like]: `%${name}%`
-//       }
-//     },
-//     limit: 15,
-//     attributes: ['id', 'nombre', 'descripcion', 'fechaLanzamiento', 'rating']
-//   })
-//   .then(videogames => {
-//     if (!videogames.length) {
-//       return res.status(404).json({ error: 'No videogames found with name containing the provided parameter.' });
-//     }
-//     res.json(videogames);
-//   })
-//   .catch(error => {
-//     res.status(500).json({ error: error.message });
-//   });
-// });
 
 // // GET /videogame/{idVideogame}
-// router.get('/videogame/:id', (req, res) => {
-//   const id = req.params.id;
+router.get('/videogame/:id', async (req, res) => {
+  const id = req.params.id;
 
+  console.log(" id---- >>", id);
+  if (id.length>6){
+    gamesDBprom = await Videogame.findByPk(id); //1ro veo si lo tengo en mi DB + rápido...
+    if (gamesDBprom) return res.send({ gamesDBprom });
+  }
+
+  //sino lo busco en los 100 de la DB // revisar esto si conviene hacerlo asi o traer todo en la 1er consulta y mantener los 100 en memoria para luego consultarlos aqui?
+
+  // GET https://api.rawg.io/api/games/{id}
+
+  responseAPIprom = await axios.get(`https://api.rawg.io/api/games/id?key=${MY_API_KEY}`);
+  
+  externalDataAPI = responseAPIprom.data; // ojo aqui es un objeto?
+
+  // const gamesAPI = externalDataAPI.map(vg => ({ // le puedo meter map a esto? NO!!
+  //   id: vg.id,
+  //   name: vg.name,
+  //   imagen: vg.background_image,
+  //   generos: vg.genres,
+  //   description: vg.description,
+  //   fechaLanzamiento: vg.released,
+  //   rating: vg.rating,
+  //   plataformas: vg.plataforms
+  // }));
+
+  const {
+        name,
+        background_image,
+        genres,
+        description,
+        released,
+        rating,
+        plataforms } = externalDataAPI;
+
+  const gamesAPI = {id,
+                  name,
+                  imagen: background_image, 
+                  description,
+                  fechaLanzamiento: released,
+                  rating,
+                  plataforms
+                  }
+
+
+
+  if (gamesAPI) return res.send({ gamesAPI });
+
+  return res.status(404).send({ message: `No se encontraron videojuegos con id: ${id} ` });
+
+});
 //   Videogame.findOne({
 //     where: { id },
 //     include: [{
@@ -132,28 +175,10 @@ router.get('/videogames', async (req, res) => {
 //   });
 // });
 
-// // POST /videogames
-// router.post('/videogames', async (req, res) => {
-//   const { name, releaseDate, genres } = req.body;
-//   try {
-//     const videogame = await Videogame.create({ name, releaseDate });
-//     if (genres && genres.length) {
-//       const genresInstances = await Genre.findAll({
-//         where: {
-//           id: { [Op.in]: genres },
-//         },
-//       });
-//       await videogame.addGenres(genresInstances);
-//     }
-//     return res.json(videogame);
-//   } catch (error) {
-//     return res.status(500).json({ error: error.message });
-//   }
-// });
 
 
 router.post('/videogames', async (req, res) => {
-    const { name, description, plataformas, genero } = req.body; //el genero viene x name sin chequeo de q puede venir accion, acion o acción y son 3 generos #...
+    const { name, description, plataformas, generos } = req.body; //los generos viene x name en 1 array...ojo q le meti 1 genero no 1 array de generos...otra los generos tienen q estar en el genre de la api...
     //console.log("name>>> ",name);
     const game = new Videogame({ name, description, plataformas }); //si lo mando con genero no lo tengo q crer aqui o si?
 
@@ -161,7 +186,7 @@ router.post('/videogames', async (req, res) => {
     //const game = Videogame.build({ name, description, plataformas }); //ojo no estoy poniendo genres por ahora
   
     try {
-        await createVideogameWithGenre(game, genero); // aqui va sin el await pq lo tengo en la funcion createVideogameWithGenre?
+        await createVideogameWithGenre(game, generos); // aqui va sin el await pq lo tengo en la funcion createVideogameWithGenre?
       //await game.save(); // al parecer aqui no....
       res.send({ message: 'Videojuego creado con éxito' });
     } catch (err) {
