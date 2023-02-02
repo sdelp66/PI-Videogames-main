@@ -7,44 +7,80 @@
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
+require('dotenv').config();
 
+const {  MY_API_KEY } = process.env;
 const express = require('express');
 const router = express.Router();
 const { Videogame, Genero } = require('../db');
 const createVideogameWithGenre = require('../controlers/index');
 const axios = require('axios');
 
-
 router.get('/videogames', async (req, res) => {
-    const { name } = req.query;
-    let games;
+  const { name } = req.query;
+  let games;
 
-    console.log("name>>>> ", name);
-  
-    if (name) {
-      games = await Videogame.findAll({
-        where: {
-          name
-        },
-        include: [{
-            model: Genero,
-            }],
-        limit: 15
-      });
-    } else {
-      games = await Videogame.findAll({
-        include: [{
+  console.log("name>>>> ", name);
+
+  if (name) {
+    games = await Videogame.findAll({
+      where: {
+        name
+      },
+      include: [{
         model: Genero,
-        }],
-        });
-    }
+      }],
+      limit: 15
+    });
+  } else {
+    games = await Videogame.findAll({
+      include: [{
+        model: Genero,
+      }],
+    });
+  }
+
+//   if (!games.length) {
+//     return res.status(404).send({ message: 'No se encontraron videojuegos' });
+//   }
+
+  const response = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page_size=15&search=${name}`);
+  const externalData = response.data.results;
+
+  res.send({ games, externalData });
+});
+
+
+// router.get('/videogames', async (req, res) => {
+//     const { name } = req.query;
+//     let games;
+
+//     console.log("name>>>> ", name);
   
-    if (!games.length) {
-      return res.status(404).send({ message: 'No se encontraron videojuegos' });
-    }
+//     if (name) {
+//       games = await Videogame.findAll({
+//         where: {
+//           name
+//         },
+//         include: [{
+//             model: Genero,
+//             }],
+//         limit: 15
+//       });
+//     } else {
+//       games = await Videogame.findAll({
+//         include: [{
+//         model: Genero,
+//         }],
+//         });
+//     }
   
-    res.send(games);
-  });
+//     if (!games.length) {
+//       return res.status(404).send({ message: 'No se encontraron videojuegos' });
+//     }
+  
+//     res.send(games);
+//   });
 
 // // GET /videogames?name="..."
 // router.get('/videogames', (req, res) => {
