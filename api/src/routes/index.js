@@ -13,7 +13,7 @@ const {  MY_API_KEY } = process.env;
 const express = require('express');
 const router = express.Router();
 const { Videogame, Genero } = require('../db');
-const createVideogameWithGenre = require('../controlers/index');
+const { createVideogameWithGenre, findOrCreateDBGenre } = require('../controlers/index');
 const axios = require('axios');
 
 router.get('/videogames', async (req, res) => {
@@ -120,16 +120,6 @@ router.get('/videogame/:id', async (req, res) => {
   
   externalDataAPI = responseAPIprom.data; // ojo aqui es un objeto?
 
-  // const gamesAPI = externalDataAPI.map(vg => ({ // le puedo meter map a esto? NO!!
-  //   id: vg.id,
-  //   name: vg.name,
-  //   imagen: vg.background_image,
-  //   generos: vg.genres,
-  //   description: vg.description,
-  //   fechaLanzamiento: vg.released,
-  //   rating: vg.rating,
-  //   plataformas: vg.plataforms
-  // }));
 
   const {
         name,
@@ -138,9 +128,9 @@ router.get('/videogame/:id', async (req, res) => {
         description,
         released,
         rating,
-        plataforms } = externalDataAPI;
+        plataforms } = externalDataAPI; //destructuring para sacar las propiedades que necesito de los objetos q vienen
 
-  const gamesAPI = {id,
+  const gamesAPI = {id, // con esas propiedades armo lo que quiero devolver...
                   name,
                   imagen: background_image, 
                   description,
@@ -148,7 +138,7 @@ router.get('/videogame/:id', async (req, res) => {
                   rating,
                   plataforms
                   }
-
+// de que otra forma puedo tomar solo las propiedades que vienen y filtrar solo las que necesito?
 
 
   if (gamesAPI) return res.send({ gamesAPI });
@@ -156,37 +146,18 @@ router.get('/videogame/:id', async (req, res) => {
   return res.status(404).send({ message: `No se encontraron videojuegos con id: ${id} ` });
 
 });
-//   Videogame.findOne({
-//     where: { id },
-//     include: [{
-//       model: Genero,
-//       as: 'generos'
-//     }],
-//     attributes: ['id', 'nombre', 'descripcion', 'fechaLanzamiento', 'rating']
-//   })
-//   .then(videogame => {
-//     if (!videogame) {
-//       return res.status(404).json({ error: 'Videogame not found.' });
-//     }
-//     res.json(videogame);
-//   })
-//   .catch(error => {
-//     res.status(500).json({ error: error.message });
-//   });
-// });
 
 
+// POST de videogame con genero...
 
 router.post('/videogames', async (req, res) => {
-    const { name, description, plataformas, generos } = req.body; //los generos viene x name en 1 array...ojo q le meti 1 genero no 1 array de generos...otra los generos tienen q estar en el genre de la api...
+    const { name, description, plataformas, generos } = req.body; //los generos viene x name en 1 array..otra los generos tienen q estar en el genre de la api...
     //console.log("name>>> ",name);
-    const game = new Videogame({ name, description, plataformas }); //si lo mando con genero no lo tengo q crer aqui o si?
+    const game = new Videogame({ name, description, plataformas }); 
 
-    //console.log("game >>>>", game);
-    //const game = Videogame.build({ name, description, plataformas }); //ojo no estoy poniendo genres por ahora
   
     try {
-        await createVideogameWithGenre(game, generos); // aqui va sin el await pq lo tengo en la funcion createVideogameWithGenre?
+        await createVideogameWithGenre(game, generos); 
       //await game.save(); // al parecer aqui no....
       res.send({ message: 'Videojuego creado con éxito' });
     } catch (err) {
@@ -195,12 +166,22 @@ router.post('/videogames', async (req, res) => {
   });
 
   
+// GET generos...
+/**
+ * [ ] GET /genres:
+Obtener todos los tipos de géneros de videojuegos posibles
+En una primera instancia deberán traerlos desde rawg y guardarlos en su propia base de datos y luego ya utilizarlos desde allí
+ * 
+ */
+router.get('/genres', async (req, res) => {
 
-// router.get('/genres', async (req, res) => {
-//     const genres = await Genre.find();
-//     res.send(genres);
-//   });
-
-
+  try {
+    const generos = await findOrCreateDBGenre()
+    res.send(generos);
+  } catch (error) {
+    res.status(500).send({ message: error });
+  }
+    
+  });
 
 module.exports = router;

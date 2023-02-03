@@ -12,18 +12,19 @@ async function createVideogameWithGenre(videogame, generosNames) { // hay q trer
     // generosNames ej [action, shoot ]
     // traigo todos los generos de la API la 1ra vez => q la tabla de generos esta vacia
     let existingGenre = await Genero.findAll();
-    console.log("existingGenre ----->> ",existingGenre);
-    console.log("existingGenre.length ----->> ",existingGenre.length);
+    //console.log("existingGenre ----->> ",existingGenre);
+    //console.log("existingGenre.length ----->> ",existingGenre.length);
     if(existingGenre.length === 0){
-      console.log("antes de generosAPI ---- >>>>");
+      //console.log("antes de generosAPI ---- >>>>");
       try {
       const generosAPI = await axios.get(`https://api.rawg.io/api/genres?key=${MY_API_KEY}`);
       //console.log("generosAPI ---- >>>>", generosAPI);
-      const generosParaDB = generosAPI.data.results.map((g) => g.name); // esto esta mal pq tienen q ser objetos {name} verlo depues
-      //los meto en la tabla
-      console.log("generosParaDB ---- >>>>", generosParaDB);
-      createdGenre = await Genero.bulkCreate(generosParaDB.map(name => ({ name }))); // ojo q deberia venir directo del map
-      console.log("createdGenre---->>" ,createdGenre);
+      //const generosParaDB = generosAPI.data.results.map((g) => g.name); // esto esta mal pq tienen q ser objetos {name} verlo depues
+      // evito convertir 1ro en un array de names y lo insertyo directo como un array de objetos con prop name..los meto en la tabla 
+      //console.log("generosParaDB ---- >>>>", generosParaDB);
+      //createdGenre = await Genero.bulkCreate(generosParaDB.map(name => ({ name }))); // ojo q deberia venir directo del map
+      createdGenre = await Genero.bulkCreate(generosAPI.data.results.map(g => ({ name: g.name })));
+      //console.log("createdGenre---->>" ,createdGenre);
       } catch (error) {
         throw Error(error);
       }
@@ -47,28 +48,26 @@ async function createVideogameWithGenre(videogame, generosNames) { // hay q trer
     return null;
   }
 
-
-
-  // esta me gusta el or pero agrega solo un genero pq hace un or... en el de arriba hace 1 por 1 la busqueda...
-    //   const genres = await Genero.findAll({
-  //     where: {
-  //       name: {
-  //         [Op.or]: genreNames
-  //       }
-  //     }
-  //   });
-  //   if (genres.length > 0) {
-  //     existingGenre = genres[0];
-  //     const createdVideogame = await videogame.save();
-  //     await createdVideogame.addGenero(existingGenre);
-  
-  //     return createdVideogame;
-  //   }
-  
-  //   return null;
-  // }
+  async function findOrCreateDBGenre() { // hay q trer los generos de la BD y usarlos alli... 
+    
+    // traigo todos los generos de la API la 1ra vez 
+    let existingGenre = await Genero.findAll(); //>> => busco si la tabla de generos esta vacia
  
+    if(existingGenre.length === 0){
+      try {
+        const generosAPI = await axios.get(`https://api.rawg.io/api/genres?key=${MY_API_KEY}`);
+        createdGenre = await Genero.bulkCreate(generosAPI.data.results.map(g => ({ name: g.name })));
+      } catch (error) {
+        throw Error(error);
+      }
+      return createdGenre
+    } else {
+      return existingGenre;
+    }
+  }
 
+  
+// esta creaba generos nuevos en la tabla pero no tenia en cuenta lo q venia de la api...
 // async function createVideogameWithGenre(videogame, name) { // hay q trer los generos de la BD y usarlos alli... NO CREAR NVOS GENEROS!!
 //     let createdGenre;
 
@@ -86,4 +85,5 @@ async function createVideogameWithGenre(videogame, generosNames) { // hay q trer
 //     return createdVideogame;
 //   }
 
-module.exports = createVideogameWithGenre;
+module.exports = {createVideogameWithGenre,
+                  findOrCreateDBGenre};
