@@ -1,0 +1,22 @@
+/* .container {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 100%;
+  } */
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .videogames {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  

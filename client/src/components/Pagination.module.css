@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .button {
+    background-color: #ddd;
+    color: black;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 16px;
+    font-size: 18px;
+    border-radius: 5px;
+    margin: 0 10px;
+  }
+  
+  .active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  

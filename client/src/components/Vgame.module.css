@@ -1,0 +1,47 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 1% 1.5%;
+    overflow: hidden;
+    width: 250px;
+    height: 370px;
+    background-color: black;
+    box-shadow: 3px 0px 3px rgba(0, 0, 0, 0.404);
+    border-bottom-right-radius: 30px;
+    border-top-left-radius: 30px;
+  }
+
+  .imagen {
+    height: 45%;
+    width: 250px;
+  }
+
+  .title {
+    margin-bottom: 5%;
+    padding: 0 2%;
+    font-size: 1.25rem;
+  }
+
+  .info {
+    font-size: 0.9rem;
+    margin: 5% 5%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detailLink {
+    cursor: pointer;
+    text-decoration: none;
+    color: #61ae6e;
+    font-size: 1.1rem;
+    margin-bottom: 5%;
+  }
+  
+  .detailLink:hover {
+    color: #9fc7a7;
+    font-weight: 600;
+  }
+  
+  
+  

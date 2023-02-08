@@ -2,11 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom' // estos 3 Browsr, store y provider los traje imitando r&M..
+import store from './redux/store';
+import { Provider } from 'react-redux'
+
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
+  // <React.StrictMode>
+  //   <App />
+  // </React.StrictMode>, // hay q usar esto de React.strictmode?? >> aqui voy con lo q usamos en R&M..
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

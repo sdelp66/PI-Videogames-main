@@ -1,0 +1,57 @@
+.container {
+    background-image: url("../images/sdelp.eth_background_for_a_videogames_16_9Home.png");
+    background-repeat: repeat;
+    background-size:contain;
+    /* width: 100vw; */
+    height: 120rem; /*probar para q cubra todos los vg*/ 
+    /* height: 100%;
+    width: 100%;  
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */ 
+  }
+
+  .topContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    padding-top: 2%;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 2rem;
+    color: white;
+  }
+
+  .title {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    text-decoration: none;
+  }
+
+  .selectContainer {
+  
+    padding: 0.5% 2%;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+    border-radius: 0.6em;
+    width: 14%;
+  }
+  
+  .select {
+    background-color:aliceblue;
+    border: none;
+    height: 100%;
+    width: 100%;
+    margin-top: 4%;
+    font-size: 1rem;
+    outline: none;
+    text-align: center;
+    font-weight: 700;
+  }
