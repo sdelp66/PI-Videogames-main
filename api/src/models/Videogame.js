@@ -38,7 +38,7 @@
     allowNull: false,
   },
   fechaLanzamiento: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
   },
   rating: {
     type: DataTypes.FLOAT,
@@ -47,10 +47,9 @@
     type: DataTypes.ARRAY(DataTypes.STRING),
     allowNull: false,
   },
-  apiId: {
-    type: DataTypes.INTEGER,
+  background_image:{
+    type: DataTypes.STRING,
   },
-
 });
 }
 

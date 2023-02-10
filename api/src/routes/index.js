@@ -86,7 +86,7 @@ router.get('/videogames', async (req, res) => {
   
   //const cantidadJuegosAPI= gamesAPI.length;
   
-  console.log("gamesAPI --->> ", gamesAPI);
+  //console.log("gamesAPI --->> ", gamesAPI);
   let todosJuntos = [];
   
   todosJuntos = todosJuntos.concat(gamesDB,gamesAPI);
@@ -113,8 +113,21 @@ router.get('/videogame/:id', async (req, res) => {
 
   //console.log(" id---- >>", id);
   if (id.length>6){
-    gamesDBprom = await Videogame.findByPk(id); //1ro veo si lo tengo en mi DB + rápido...
-    if (gamesDBprom) return res.send({ gamesDBprom });
+    gamesDBprom = await Videogame.findByPk(id,{include: [{
+      model: Genero,
+      }]}); //1ro veo si lo tengo en mi DB + rápido...
+    // puff lo tengo q convertir a lo mismo q mando si viene de la api (por no haberle puesto los mismos nombres y estructura...)
+    let videoDB = {
+      id:gamesDBprom.id,
+      name: gamesDBprom.name,
+      background_image: gamesDBprom.background_image,
+      description: gamesDBprom.description,
+      released: gamesDBprom.fechaLanzamiento,
+      rating: gamesDBprom.rating,
+      platformas: gamesDBprom.plataformas.toString(),
+      generos: gamesDBprom.generos.map(g => g.name).join(', '),
+    }
+    if (gamesDBprom) return res.json(videoDB);
   }
 
   //sino lo busco en los 100 de la DB // revisar esto si conviene hacerlo asi o traer todo en la 1er consulta y mantener los 100 en memoria para luego consultarlos aqui?
@@ -140,32 +153,6 @@ router.get('/videogame/:id', async (req, res) => {
     platformas,
     generos
   };
-   //   return videogameDetails
-
-  // const {
-  //       name,
-  //       background_image,
-  //       description,
-  //       released,
-  //       rating,
-  //       genres, } = externalDataAPI; //destructuring para sacar las propiedades que necesito de los objetos q vienen
-
-  //       // let generos = responseAPIprom.data.genres.map(g => g.name); //generos es un array
-  //       console.log("genres ---> ", genres);
-
-  //       let plataformas = externalDataAPI.platforms.map(g => g.platform.name);     //plataformas es un array
-
-  // const gamesAPI = {id, // con esas propiedades armo lo que quiero devolver...
-  //                 name,
-  //                 imagen: background_image, 
-  //                 description,
-  //                 fechaLanzamiento: released,
-  //                 rating,
-  //                 generos: genres,
-  //                 plataformas,
-  //                 }
-// de que otra forma puedo tomar solo las propiedades que vienen y filtrar solo las que necesito?
-
 
   if (videogameDetails) return res.json(videogameDetails);
 
@@ -177,12 +164,13 @@ router.get('/videogame/:id', async (req, res) => {
 // POST de videogame con genero...
 
 router.post('/videogames', async (req, res) => {
-    const { name, description, plataformas, generos } = req.body; //los generos viene x name en 1 array..otra los generos tienen q estar en el genre de la api...
+    const { name, description, plataformas, generos, fechaLanzamiento, rating } = req.body; //los generos viene x name en 1 array..otra los generos tienen q estar en el genre de la api...
     //console.log("name>>> ",name);
     // convierto pra letra del name a mayuscula  (x si viene minus y despues afecta ordenamiento)
     const primaLetra = name.charAt(0).toUpperCase();
     const enMayuscula1ra = primaLetra + name.slice(1); 
-    const game = new Videogame({ name: enMayuscula1ra, description, plataformas }); 
+    const background_image = 'https://img.freepik.com/fotos-premium/retrato-jugador-jugueton-loco-que-disfruta-jugando-videojuegos_194143-416.jpg';
+    const game = new Videogame({ name: enMayuscula1ra, description, plataformas, fechaLanzamiento, rating, background_image }); 
 
   
     try {

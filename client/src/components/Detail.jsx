@@ -15,22 +15,16 @@ import style from "./Detail.module.css";
     //console.log(detailId)
 
     useEffect(() => {
-        console.log("entro al useEffect");
+        // console.log("entro al useEffect");
         dispatch(getVideogameDetail(id));
       }, [dispatch, id]);
 
     const vGame = useSelector((state) => state.videogameDetail);
-    console.log("vGame -- >", vGame);
+    // console.log("vGame -- >", vGame);
+    // console.log("vGame generos-- >", vGame.generos);
+    // console.log("vGame platformas-- >", vGame.platformas);
+    
 
-    // let desarmoGeneros;
-    // let desarmoPlataformas;
-    // // if (typeof vGame.generos[0] === "string") {
-    // //     desarmoGeneros = vGame.generos.toString();
-    // //     desarmoPlataformas = vGame.plataformas.toString(); //aprovecho y saco las plataformas
-    // // } else {
-    // //     desarmoGeneros = vGame.generos.map((e) => e.name).toString();
-    // //     desarmoPlataformas = vGame.plataformas.map((e) => e.name).toString();
-    // // }
 
     return (
         <div className={style.detail}>
@@ -45,7 +39,7 @@ import style from "./Detail.module.css";
             <div className={style.txt}>
                 <h2 className={style.title}>{vGame.name}</h2>
                 <h4 className={style.info}>
-                    Description:
+                    Descripción:
                   <span className={style.span}>
                     {vGame.description}
                   </span>

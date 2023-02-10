@@ -42,7 +42,7 @@ export const getVideogamesXName = (search) => {
         const respuesta = await axios.get(
           `http://localhost:3001/videogame/${id}`
         );
-        console.log("ejecuto la action");
+        //console.log("ejecuto la action");
         return dispatch({ type: GET_VIDEOGAME_DETALLE, payload: respuesta.data });
       } catch (err) {console.log("err->>>", err);}
     };
@@ -88,5 +88,20 @@ export const filtrarFuente = (payload) => {
     return {
       type: ORDEN_RATING,
       payload,
+    };
+  };
+
+  export const postVideogames = (payload) => {
+    return async function () {
+      try {
+        let respuesta = await axios.post(
+          `http://localhost:3001/videogames`,
+          payload
+        );
+        alert("Videogame creado con éxito");
+        return respuesta;
+      } catch (err) {
+        alert("ERROR :" + err.response.data.err )
+      }
     };
   };

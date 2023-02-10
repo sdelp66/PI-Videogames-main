@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { filtroXGenero, getGeneros, getVideogames, getVideogamesXName, filtrarFuente, ordenAlfa, ordenRating } from "../redux/actions";
 import Vgames from "./Vgames";
 import SearchBar from "./SearchBar";
+import CreateVG from "./CrearVG";
 
 export default function Home() {
     const dispatch = useDispatch();
@@ -12,6 +13,11 @@ export default function Home() {
     const allGeneros = useSelector((state) => state.generos); // para filtar x genero
     const [order, setOrder] = useState(""); // para manejar el orden ALFA
     const [order2, setOrder2] = useState(""); // para manejar el orden rating
+
+    //boton crear para el renderizado del form https://youtu.be/HVYzAf2DMAs
+    const [isVisibleModal, setIsVisibleModal] = useState(false);
+    const openModal = () => setIsVisibleModal(true);
+    const closeModal = () => setIsVisibleModal(false);
 
      //generos
     const handlerFilterGenre = (e) => {
@@ -38,6 +44,12 @@ export default function Home() {
         setOrder2(e.target.value);
       };
 
+    //logica reset btn
+    const handleReset = (e) =>{
+        e.preventDefault();
+        dispatch(getVideogames());
+    }    
+
     useEffect(() => {
         dispatch(getVideogames());
         dispatch(getVideogamesXName());
@@ -48,76 +60,88 @@ export default function Home() {
         dispatch(ordenRating());
       }, [dispatch]);
 
-    return (
-            
-            <div className={style.container}>
-                <div className={style.topContainer}>
-                    <h1 className={style.title}>Los videogames de Henry</h1>
-                    {/* //orden */}
-                    <div className={style.selectContainer}>
-                        <label for="order">Alfabético x Nombre</label>
-                        <select
-                            onChange={(e) => handlerOrderByAlfabetic(e)}
-                            className={style.select}
-                            name="order"
-                            id="order"
-                        >
-                            <option></option>
-                            <option value="a-z">A-Z</option>
-                            <option value="z-a">Z-A</option>
-                        </select>
+      if (isVisibleModal === false) {
+        return (
+                
+                <div className={style.container}>
+                    <div className={style.topContainer}>
+                        <h1 className={style.title}>Los videogames de Henry</h1>
+                        <div className={style.filtersContainer}>
+                            {/* //orden */}
+                            <div className={style.selectContainer}>
+                                <label for="order">Alfabético</label>
+                                <select
+                                    onChange={(e) => handlerOrderByAlfabetic(e)}
+                                    className={style.select}
+                                    name="order"
+                                    id="order"
+                                >
+                                    <option></option>
+                                    <option value="a-z">A-Z</option>
+                                    <option value="z-a">Z-A</option>
+                                </select>
+                            </div>
+                            <div className={style.selectContainer}>
+                                <label for="order">Rating</label>
+                                <select
+                                    onChange={(e) => handlerOrderByRating(e)}
+                                    className={style.select}
+                                    name="order"
+                                    id="order"
+                                >
+                                    <option></option>
+                                    <option value="0-5">0-5</option>
+                                    <option value="5-0">5-0</option>
+                                </select>
+                            </div>
+                            {/* // filtro generos */}
+                            <div className={style.selectContainer}>
+                            <label for="genero">Generos</label>
+                            <select
+                                onChange={(e) => handlerFilterGenre(e)}
+                                className={style.select}
+                                name="genero"
+                                id="genero"
+                            >
+                                <option></option>
+                                {allGeneros?.map((el) => {
+                                return (
+                                    <option key={el.id} value={el.name}>
+                                    {el.name}
+                                    </option>
+                                );
+                                })}
+                            </select>
+                            </div>
+                            {/* // filtro fuente */}
+                            <div className={style.selectContainer}>
+                            <label for="fuente">Fuente</label>
+                            <select
+                                onChange={(e) => handlerFilterSource(e)}
+                                className={style.select}
+                                name="fuente"
+                                id="fuente"
+                            >
+                                <option></option>
+                                <option value="all">All</option>
+                                <option value="api">API</option>
+                                <option value="db">DB</option>
+                            </select>
+                        </div>
+                        <button onClick={openModal} className={style.btn}>
+                            Crear
+                        </button>
+                        <button onClick={(e)=>handleReset(e)} className={style.btn}>
+                            Reset
+                        </button>
                     </div>
-                    <div className={style.selectContainer}>
-                        <label for="order">Rating</label>
-                        <select
-                            onChange={(e) => handlerOrderByRating(e)}
-                            className={style.select}
-                            name="order"
-                            id="order"
-                        >
-                            <option></option>
-                            <option value="0-5">0-5</option>
-                            <option value="5-0">5-0</option>
-                        </select>
-                    </div>
-                {/* // filtro generos */}
-                <div className={style.selectContainer}>
-                    <label for="genero">Generos</label>
-                    <select
-                        onChange={(e) => handlerFilterGenre(e)}
-                        className={style.select}
-                        name="genero"
-                        id="genero"
-                    >
-                        <option></option>
-                        {allGeneros?.map((el) => {
-                        return (
-                            <option key={el.id} value={el.name}>
-                            {el.name}
-                            </option>
-                        );
-                        })}
-                    </select>
+                    <SearchBar /> 
+                    <Vgames />
                 </div>
-                {/* // filtro fuente */}
-                <div className={style.selectContainer}>
-                    <label for="fuente">Fuente</label>
-                    <select
-                        onChange={(e) => handlerFilterSource(e)}
-                        className={style.select}
-                        name="fuente"
-                        id="fuente"
-                    >
-                        <option></option>
-                        <option value="all">All</option>
-                        <option value="api">API</option>
-                        <option value="db">DB</option>
-                    </select>
-                </div>
-                <SearchBar /> 
-                <Vgames />
+                Home
             </div>
-            Home
-        </div>
-    )
+        )
+    } else {
+        return <CreateVG func={closeModal} />;
+    }
 }

@@ -3,7 +3,7 @@
     background-repeat: repeat;
     background-size:contain;
     /* width: 100vw; */
-    height: 120rem; /*probar para q cubra todos los vg*/ 
+    height: 140rem; /*probar para q cubra todos los vg*/ 
     /* height: 100%;
     width: 100%;  
     /* display: flex;
@@ -32,6 +32,15 @@
     text-decoration: none;
   }
 
+  .filtersContainer {
+    margin-top: 4%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 70%;
+  }
+
   .selectContainer {
   
     padding: 0.5% 2%;
@@ -54,4 +63,20 @@
     outline: none;
     text-align: center;
     font-weight: 700;
+  }
+
+  .btn {
+    appearance: none;
+    background-color: transparent;
+    border-radius: 0.6em;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.8em 1.7em;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    border-color: #61ae72;
+    color: rgb(255, 255, 255);
+    box-shadow: 0 0 40px 40px #61ae6e inset, 0 0 0 0 #61ae6e;
   }

@@ -22,13 +22,19 @@ export default function Vgames() {
          <div className={style.videogames}>
             {
                currentGames.map((e) => {
-                  console.log("e--->", e);
+                  //console.log("e--->", e);
+                  let imagenU;
+                  if(e.imagen===undefined) {
+                     imagenU= e.background_image;
+                  } else {
+                     imagenU = e.imagen
+                  }
                return <Vgame
                   id={e.id}
                   key={e.id}
                   name={e.name}
                   generos={e.generos}
-                  imagen={e.imagen}
+                  imagen={imagenU}
                   />
                })
             }

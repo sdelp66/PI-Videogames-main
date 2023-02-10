@@ -27,6 +27,11 @@
     margin-top: -80px;
   }
 
+  .landingTitle > p {
+    font-size: 2.9rem;
+    font-weight: 600;
+  }
+
   .start {
     background-color: transparent;
     border-radius: 0.6em;

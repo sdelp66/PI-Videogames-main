@@ -24,7 +24,7 @@ async function createVideogameWithGenre(videogame, generosNames) { // hay q trer
       //console.log("generosParaDB ---- >>>>", generosParaDB);
       //createdGenre = await Genero.bulkCreate(generosParaDB.map(name => ({ name }))); // ojo q deberia venir directo del map
       createdGenre = await Genero.bulkCreate(generosAPI.data.results.map(g => ({ name: g.name })));
-      //console.log("createdGenre---->>" ,createdGenre);
+
       } catch (error) {
         throw Error(error);
       }
