@@ -1,32 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getVideogameDetail } from "../redux/actions";
+import { getVideogameDetail, cargando } from "../redux/actions";
 import style from "./Detail.module.css";
+import Spinner from "./Spinner";
+
 
 
   export default function Detail(){
     const dispatch = useDispatch();
-    //const idVideogame = useParams();
-    let { id } = useParams();
-    console.log("id -- >", id);
 
-    //const [vGame, setVGame] = useState({});
-    //console.log(detailId)
+    let { id } = useParams();
+
 
     useEffect(() => {
-        // console.log("entro al useEffect");
+        dispatch(cargando());
         dispatch(getVideogameDetail(id));
-      }, [dispatch, id]);
+      }, [dispatch, id ]);
 
     const vGame = useSelector((state) => state.videogameDetail);
-    // console.log("vGame -- >", vGame);
-    // console.log("vGame generos-- >", vGame.generos);
-    // console.log("vGame platformas-- >", vGame.platformas);
+    const cargueti = useSelector((state) => state.cargando);
+
     
 
-
-    return (
+    if(!cargueti){
+      return (
         <div className={style.detail}>
           <NavLink className={style.btn} to="/home">
             Volver
@@ -62,5 +60,12 @@ import style from "./Detail.module.css";
                 </h4>
             </div>
         </div>
-    )
+      )
+    } else {
+      return(
+        <div className={style.detail}>
+          <Spinner />
+        </div>
+      )
+    }
   }

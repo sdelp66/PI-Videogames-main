@@ -228,7 +228,7 @@ const CreateVG = ({ func }) => {
 
           <div className={style.btnContainer}>
             {console.log("errors --->> ", errors)}
-            <button className={input.name == "" || Object.entries(errors).length !== 0 ? style.none : style.btnSubmit} type="submit">
+            <button className={input.name ==="" || Object.entries(errors).length !== 0 ? style.none : style.btnSubmit} type="submit">
               Crear
             </button>
             <NavLink

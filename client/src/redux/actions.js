@@ -6,7 +6,9 @@ export const FILTRO_GENERO = "FILTRO_GENERO";
 export const FILTRO_FUENTE = "FILTRO_FUENTE";
 export const ORDEN_ALFA = "ORDEN_ALFA";
 export const ORDEN_RATING = "ORDEN_RATING";
-export const GET_VIDEOGAME_DETALLE = "GET_VIDEOGAME_DETALLE"
+export const GET_VIDEOGAME_DETALLE = "GET_VIDEOGAME_DETALLE";
+export const CARGANDO = "CARGANDO";
+export const SET_PAGE = "SET_PAGE";
 
 export const getVideogames = () => {
     return async function (dispatch) {
@@ -105,3 +107,17 @@ export const filtrarFuente = (payload) => {
       }
     };
   };
+
+  export const cargando = () => {
+    return {
+      type: CARGANDO,
+      payload: true,
+    };
+  };
+
+  export const setPage = (n) => {
+    return {
+        type:SET_PAGE,
+        payload:n
+    }
+  }

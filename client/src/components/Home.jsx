@@ -2,7 +2,7 @@ import React from "react";
 import style from "./Home.module.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { filtroXGenero, getGeneros, getVideogames, getVideogamesXName, filtrarFuente, ordenAlfa, ordenRating } from "../redux/actions";
+import { filtroXGenero, getGeneros, getVideogames, filtrarFuente, ordenAlfa, ordenRating, cargando } from "../redux/actions";
 import Vgames from "./Vgames";
 import SearchBar from "./SearchBar";
 import CreateVG from "./CrearVG";
@@ -14,7 +14,7 @@ export default function Home() {
     const [order, setOrder] = useState(""); // para manejar el orden ALFA
     const [order2, setOrder2] = useState(""); // para manejar el orden rating
 
-    //boton crear para el renderizado del form https://youtu.be/HVYzAf2DMAs
+    //boton crear para el renderizado del form
     const [isVisibleModal, setIsVisibleModal] = useState(false);
     const openModal = () => setIsVisibleModal(true);
     const closeModal = () => setIsVisibleModal(false);
@@ -47,17 +47,19 @@ export default function Home() {
     //logica reset btn
     const handleReset = (e) =>{
         e.preventDefault();
+        dispatch(cargando());
         dispatch(getVideogames());
     }    
 
     useEffect(() => {
+        dispatch(cargando());
         dispatch(getVideogames());
-        dispatch(getVideogamesXName());
+        // dispatch(getVideogamesXName());
         dispatch(getGeneros());
-        dispatch(filtroXGenero());
-        dispatch(filtrarFuente());
-        dispatch(ordenAlfa());
-        dispatch(ordenRating());
+        // dispatch(filtroXGenero());
+        // dispatch(filtrarFuente());
+        // dispatch(ordenAlfa());
+        // dispatch(ordenRating());
       }, [dispatch]);
 
       if (isVisibleModal === false) {

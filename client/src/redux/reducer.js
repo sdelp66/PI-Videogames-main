@@ -8,12 +8,16 @@ import {
     ORDEN_ALFA, 
     ORDEN_RATING, 
     GET_VIDEOGAME_DETALLE,
+    CARGANDO,
+    SET_PAGE
 } from "./actions";
 const initialState = {
     videoGames: [],
     allVideoGames: [],
     videogameDetail: {},
     generos: [],
+    cargando: false,
+    currentPage: 1
 
 };
 
@@ -24,12 +28,15 @@ const reducer = (state = initialState, {type, payload}) => {
                 ...state,
                 videoGames: payload,
                 allVideoGames: payload,
+                cargando: false,
+                currentPage: 1
             };
         
         case GET_VIDEOGAMES_XNAME:
             return{
             ...state,
-            videoGames: payload
+            videoGames: payload,
+            cargando: false
             };
         
         case GET_GENEROS:
@@ -97,6 +104,7 @@ const reducer = (state = initialState, {type, payload}) => {
                     return {
                       ...state,
                       videoGames: sortAlfa,
+                      currentPage: 1
                     };
 
                     case ORDEN_RATING:
@@ -123,12 +131,26 @@ const reducer = (state = initialState, {type, payload}) => {
                         return {
                           ...state,
                           videoGames: sortRating,
+                          currentPage: 1
                         };
             case GET_VIDEOGAME_DETALLE:
                 return {
                     ...state,
                     videogameDetail: payload,
+                    cargando: false
                     };
+
+            case CARGANDO:
+                return{
+                    ...state,
+                    cargando : true
+                }
+
+            case SET_PAGE:
+                return{
+                    ...state,
+                    currentPage: payload
+                }
                       
         
 

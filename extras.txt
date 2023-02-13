@@ -1,0 +1,2 @@
+aqui agrego los extras
+x ej el spinner para cuando va a buscar la api
