@@ -34,16 +34,7 @@ router.get('/videogames', async (req, res) => {
         console.error(error);
       }
       
-       // esto no taria los juegos q tenian esa palabra         
-      // gamesDBprom = await Videogame.findAll({
-      //   where: {
-      //     name
-      //   },
-      //   include: [{
-      //     model: Genero,
-      //   }],
-      //   limit: 15
-      // });
+
       responseAPIprom = await axios.get(`https://api.rawg.io/api/games?key=${MY_API_KEY}&page_size=15&search=${name}`);
       //externalData = response.data.results;
     } else {
@@ -81,12 +72,9 @@ router.get('/videogames', async (req, res) => {
       imagen: vg.background_image,
       generos: vg.genres,
       rating: vg.rating,
-    }))
+    }));
   
   
-  //const cantidadJuegosAPI= gamesAPI.length;
-  
-  //console.log("gamesAPI --->> ", gamesAPI);
   let todosJuntos = [];
   
   todosJuntos = todosJuntos.concat(gamesDB,gamesAPI);
@@ -164,12 +152,12 @@ router.get('/videogame/:id', async (req, res) => {
 // POST de videogame con genero...
 
 router.post('/videogames', async (req, res) => {
-    const { name, description, plataformas, generos, fechaLanzamiento, rating } = req.body; //los generos viene x name en 1 array..otra los generos tienen q estar en el genre de la api...
+    const { name, description, plataformas, generos, fechaLanzamiento, rating, background_image } = req.body; //los generos viene x name en 1 array..otra los generos tienen q estar en el genre de la api...
     //console.log("name>>> ",name);
     // convierto pra letra del name a mayuscula  (x si viene minus y despues afecta ordenamiento)
     const primaLetra = name.charAt(0).toUpperCase();
     const enMayuscula1ra = primaLetra + name.slice(1); 
-    const background_image = 'https://img.freepik.com/fotos-premium/retrato-jugador-jugueton-loco-que-disfruta-jugando-videojuegos_194143-416.jpg';
+    //const background_image = 'https://img.freepik.com/fotos-premium/retrato-jugador-jugueton-loco-que-disfruta-jugando-videojuegos_194143-416.jpg';
     const game = new Videogame({ name: enMayuscula1ra, description, plataformas, fechaLanzamiento, rating, background_image }); 
 
   

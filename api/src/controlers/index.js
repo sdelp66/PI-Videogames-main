@@ -67,23 +67,7 @@ async function createVideogameWithGenre(videogame, generosNames) { // hay q trer
   }
 
   
-// esta creaba generos nuevos en la tabla pero no tenia en cuenta lo q venia de la api...
-// async function createVideogameWithGenre(videogame, name) { // hay q trer los generos de la BD y usarlos alli... NO CREAR NVOS GENEROS!!
-//     let createdGenre;
 
-//     const existingGenre = await Genero.findOne({ where: { name } });
-//     if (existingGenre) {
-//       createdGenre = existingGenre;
-//     } else {
-//       createdGenre = await Genero.create({name});
-//     }
-//     //console.log("antes del save");
-//     const createdVideogame = await videogame.save();
-//     //console.log("despues del save");
-//     await createdVideogame.addGenero(createdGenre);
-  
-//     return createdVideogame;
-//   }
 
 module.exports = {createVideogameWithGenre,
                   findOrCreateDBGenre};

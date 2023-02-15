@@ -1,30 +1,30 @@
-// In this example we are testing the GET endpoint for getting all video games.
+// En este ejemplo estamos probando el punto final GET para obtener todos los videojuegos.
 
 const request = require('supertest');
-const app = require('../app');
+const app = require('../src/app.js');
 
 describe('GET /videoGames', () => {
-it('should return an array of video games', async () => {
-const res = await request(app).get('/videoGames');
+    it('debería retornar un array de videojuegos', async () => {
+      const res = await request(app).get('/videoGames').timeout(10000); // Aumentar el tiempo límite a 10000ms
+  
+      expect(res.statusCode).toEqual(200);
+      expect(res.body).toBeInstanceOf(Array);
+      expect(res.body[0]).toHaveProperty('id');
+      expect(res.body[0]).toHaveProperty('name');
+      expect(res.body[0]).toHaveProperty('imagen');
+      expect(res.body[0]).toHaveProperty('description');
+      expect(res.body[0]).toHaveProperty('fechaLanzamiento');
+      expect(res.body[0]).toHaveProperty('rating');
+      expect(res.body[0]).toHaveProperty('plataforms');
+    });
+  });
 
-expect(res.statusCode).toEqual(200);
-expect(res.body).toBeInstanceOf(Array);
-expect(res.body[0]).toHaveProperty('id');
-expect(res.body[0]).toHaveProperty('name');
-expect(res.body[0]).toHaveProperty('imagen');
-expect(res.body[0]).toHaveProperty('description');
-expect(res.body[0]).toHaveProperty('fechaLanzamiento');
-expect(res.body[0]).toHaveProperty('rating');
-expect(res.body[0]).toHaveProperty('plataforms');
 
-});
-});
-
-// In this example we are testing the GET endpoint for getting a single video game.
+// En este ejemplo estamos probando la solicitud GET para obtener un solo videojuego.
 
 describe('GET /videoGames/:id', () => {
 it('should return a single video game', async () => {
-const res = await request(app).get('/videoGames/some-id');
+const res = await request(app).get('/videoGames/3328');
 
 expect(res.statusCode).toEqual(200);
 expect(res.body).toHaveProperty('id');

@@ -2,7 +2,7 @@ import React from "react";
 import style from "./Home.module.css";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { filtroXGenero, getGeneros, getVideogames, filtrarFuente, ordenAlfa, ordenRating, cargando } from "../redux/actions";
+import { filtroXGenero, getGeneros, getVideogames, filtrarFuente, ordenAlfa, ordenRating, cargando, resetSelect } from "../redux/actions";
 import Vgames from "./Vgames";
 import SearchBar from "./SearchBar";
 import CreateVG from "./CrearVG";
@@ -11,6 +11,11 @@ export default function Home() {
     const dispatch = useDispatch();
 
     const allGeneros = useSelector((state) => state.generos); // para filtar x genero
+    const selectAlfa = useSelector((state) => state.selectAlfa);
+    const selectRating = useSelector((state) => state.selectRating);
+    const selectGenero = useSelector((state) => state.selectGenero);
+    const selectFuente = useSelector((state) => state.selectFuente);
+     //las etiquetas de los select...
     const [order, setOrder] = useState(""); // para manejar el orden ALFA
     const [order2, setOrder2] = useState(""); // para manejar el orden rating
 
@@ -22,8 +27,12 @@ export default function Home() {
      //generos
     const handlerFilterGenre = (e) => {
        // console.log("etargetvalue de genero >>>",e.target.value );
-    if (e.target.value) dispatch(filtroXGenero(e.target.value));
-    };
+        if (e.target.value!=="") {
+            dispatch(filtroXGenero(e.target.value));
+    // } else {dispatch(cargando);
+    //         getVideogames();}
+        };
+    }
 
     //fuente
     const handlerFilterSource = (e) => {
@@ -33,20 +42,21 @@ export default function Home() {
 
     //ordenamientos
     const handlerOrderByAlfabetic = (e) => {
-        e.preventDefault();
+        //e.preventDefault();
         if (e.target.value) dispatch(ordenAlfa(e.target.value));
         setOrder(e.target.value);
     };
 
     const handlerOrderByRating = (e) => {
-        e.preventDefault();
+        //e.preventDefault();
         if (e.target.value) dispatch(ordenRating(e.target.value));
         setOrder2(e.target.value);
       };
 
     //logica reset btn
     const handleReset = (e) =>{
-        e.preventDefault();
+        //e.preventDefault();
+        dispatch(resetSelect());
         dispatch(cargando());
         dispatch(getVideogames());
     }    
@@ -54,7 +64,6 @@ export default function Home() {
     useEffect(() => {
         dispatch(cargando());
         dispatch(getVideogames());
-        // dispatch(getVideogamesXName());
         dispatch(getGeneros());
         // dispatch(filtroXGenero());
         // dispatch(filtrarFuente());
@@ -77,6 +86,7 @@ export default function Home() {
                                     className={style.select}
                                     name="order"
                                     id="order"
+                                    value={selectAlfa}
                                 >
                                     <option></option>
                                     <option value="a-z">A-Z</option>
@@ -90,6 +100,7 @@ export default function Home() {
                                     className={style.select}
                                     name="order"
                                     id="order"
+                                    value={selectRating}
                                 >
                                     <option></option>
                                     <option value="0-5">0-5</option>
@@ -104,6 +115,7 @@ export default function Home() {
                                 className={style.select}
                                 name="genero"
                                 id="genero"
+                                value={selectGenero}
                             >
                                 <option></option>
                                 {allGeneros?.map((el) => {
@@ -123,6 +135,7 @@ export default function Home() {
                                 className={style.select}
                                 name="fuente"
                                 id="fuente"
+                                value={selectFuente}
                             >
                                 <option></option>
                                 <option value="all">All</option>

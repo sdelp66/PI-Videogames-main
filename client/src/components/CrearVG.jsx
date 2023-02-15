@@ -21,6 +21,7 @@ const CreateVG = ({ func }) => {
     description: "",
     fechaLanzamiento: "",
     rating: "",
+    background_image:"",
     generos: [],
     plataformas: [],
   });
@@ -60,7 +61,7 @@ const CreateVG = ({ func }) => {
 
  
   const deleteOptionGenres = (e, element) => {
-    e.preventDefault();
+    //e.preventDefault();
     const newGenres = input.generos.filter((el) => el !== element);
     setInput({
       ...input,
@@ -75,7 +76,7 @@ const CreateVG = ({ func }) => {
   };
 
   const deleteOptionPlatforms = (e, element) => {
-    e.preventDefault();
+    //e.preventDefault();
     const newPlatforms = input.plataformas.filter((el) => el !== element);
     setInput({
       ...input,
@@ -91,12 +92,13 @@ const CreateVG = ({ func }) => {
 
   const handlerSubmit = (e) => {
     e.preventDefault();
-    console.log(input);
+    //console.log(input);
     dispatch(postVideogames(input));
     setInput({
       name: "",
       description: "",
       fechaLanzamiento: "",
+      background_image:"",
       rating: "",
       generos: [],
       plataformas: [],
@@ -161,6 +163,19 @@ const CreateVG = ({ func }) => {
             />
           </div>
           {errors.description && <p className={style.danger}>{errors.description}</p>}
+          <div className={style.inputContainer}>
+            <label for="background_image">URL Imagen</label>
+            <input
+              placeholder="https://img.freepik.com/fotos-premium/retrato-jugador-jugueton-loco-que-disfruta-jugando-videojuegos_194143-416.jpg"
+              name="background_image"
+              onChange={(e) => handlerInputvalue(e)}
+              value={input.background_image}
+              type="text"
+            />
+          </div>
+          {errors.background_image && <p className={style.danger}>{errors.background_image}</p>}
+
+
           <div className={style.selectsContainer}>
             <div className={style.selectContainer}>
               <label for="generos">Generos</label>

@@ -1,4 +1,5 @@
 aqui agrego los extras
+
 x ej el cargando para cuando va a buscar la api
 el ir a la pag 1 cuando ordenamiento
 borrar los values de los select cuando hago el reset

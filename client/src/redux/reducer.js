@@ -9,7 +9,9 @@ import {
     ORDEN_RATING, 
     GET_VIDEOGAME_DETALLE,
     CARGANDO,
-    SET_PAGE
+    SET_PAGE,
+    RESET_SELECT,
+    GUARDA_FILTRO
 } from "./actions";
 const initialState = {
     videoGames: [],
@@ -17,8 +19,11 @@ const initialState = {
     videogameDetail: {},
     generos: [],
     cargando: false,
-    currentPage: 1
-
+    currentPage: 1,
+    selectAlfa: "",
+    selectRating: "",
+    selectGenero: "",
+    selectFuente: ""
 };
 
 const reducer = (state = initialState, {type, payload}) => {
@@ -45,7 +50,7 @@ const reducer = (state = initialState, {type, payload}) => {
                 generos: payload,
             }
         case FILTRO_GENERO:
-            const allVideoGames = state.allVideoGames;
+            const allVideoGames = state.allVideoGames; // aqui traigo todos (sin filtro)
             const filteredVideogames = allVideoGames.filter(game => {
                 for (let i = 0; i < game.generos.length; i++) {
                   if (game.generos[i].name === payload) {
@@ -59,25 +64,21 @@ const reducer = (state = initialState, {type, payload}) => {
             return {
                 ...state,
                 videoGames: filteredVideogames,
+                selectGenero: payload
             };
 
             case FILTRO_FUENTE:
-                const allVideoGamesSource = state.allVideoGames;
+                const allVideoGamesSource = state.videoGames; //  aqui traigo el filtrado previo... el problema es si elijo 1ro este filtro no acumulo...
                 const filterCreates =
                   payload === "db"
                     ? allVideoGamesSource.filter((el) => typeof el.id === "string")
                     : allVideoGamesSource.filter((el) => typeof el.id === "number");
-                    // for (let i = 0; i < allVideoGamesSource.length; i++) {
-                    //     console.log(`allVideoGamesSource id del i=${i} >>> `, allVideoGamesSource[i].id);
-                    //     console.log(`allVideoGamesSource id del i=${i} type >>> `, typeof allVideoGamesSource[i].id);
-                    //   }
-                    // console.log("allVideoGamesSource id el 0 length>>> ", allVideoGamesSource[0].id.length);
-                    // console.log("allVideoGamesSource dentro filtro source >>> ",allVideoGamesSource);
-                    // console.log("filterCreates dentro filtro source >>> ",filterCreates);
+
                 return {
                   ...state,
                   videoGames:
                     payload === "all" ? allVideoGamesSource : filterCreates,
+                    selectFuente: payload
                 };
             
                 case ORDEN_ALFA:
@@ -104,7 +105,9 @@ const reducer = (state = initialState, {type, payload}) => {
                     return {
                       ...state,
                       videoGames: sortAlfa,
-                      currentPage: 1
+                      currentPage: 1,
+                      selectAlfa: payload,
+                      selectRating: ""
                     };
 
                     case ORDEN_RATING:
@@ -131,7 +134,9 @@ const reducer = (state = initialState, {type, payload}) => {
                         return {
                           ...state,
                           videoGames: sortRating,
-                          currentPage: 1
+                          currentPage: 1,
+                          selectRating: payload, 
+                          selectAlfa: ""
                         };
             case GET_VIDEOGAME_DETALLE:
                 return {
@@ -150,6 +155,20 @@ const reducer = (state = initialState, {type, payload}) => {
                 return{
                     ...state,
                     currentPage: payload
+                }
+
+            case RESET_SELECT:
+                return{
+                    ...state,
+                    selectAlfa: "",
+                    selectRating: "",
+                    selectGenero: "",
+                    selectFuente: ""
+                }
+
+            case GUARDA_FILTRO:
+                return {
+                    ...state, 
                 }
                       
         

@@ -19,7 +19,15 @@ export function validar(input) {
     } else if (!/^\d{4}[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12][0-9]|3[01])$/.test(input.fechaLanzamiento)) {
       errors.fechaLanzamiento = "usa 4 para el año, 2 para el mes y 2 para el día... en ese orden"; //l formato de fecha (AAAA-MM-DD, AAAA/MM/DD, AAAA.MM.DD)
     }
-  
+    
+    if (!input.background_image) {
+      errors.background_image = "Hay que poner una imagen...";
+    } else if (
+      !/^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(input.background_image)
+    ) {
+      errors.background_image = "el formato de la URL no es correcto..";
+    }
+
     if (!input.rating) {
       errors.rating = "bue... hay q poner algún rating también";
     } else if (

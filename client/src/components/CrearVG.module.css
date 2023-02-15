@@ -72,7 +72,7 @@ input, textarea {
   display: flex;
   flex-direction: row;
   width: 100%;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 
@@ -84,12 +84,14 @@ input, textarea {
     justify-content: space-between; 
     margin-bottom: 7%;
     margin-top: 4%;
+    background-color: #f0f8ff4a;
+    border-radius: 10px
 }
 
 .select {
     border: none;
     background-color: transparent;
-    color: white;
+    color: black;
     width: 50%;
     margin: 4% 0
      
@@ -174,3 +176,4 @@ input, textarea {
     font-weight: 700;
     box-shadow: 0 0 10px 0 #f80a1e inset, 0 0 10px 4px #f80a1e;
   } */
+

@@ -9,6 +9,8 @@ export const ORDEN_RATING = "ORDEN_RATING";
 export const GET_VIDEOGAME_DETALLE = "GET_VIDEOGAME_DETALLE";
 export const CARGANDO = "CARGANDO";
 export const SET_PAGE = "SET_PAGE";
+export const RESET_SELECT = "RESET_SELECT";
+export const GUARDA_FILTRO = "GUARDA_FILTRO"
 
 export const getVideogames = () => {
     return async function (dispatch) {
@@ -121,3 +123,17 @@ export const filtrarFuente = (payload) => {
         payload:n
     }
   }
+
+  // actions/resetSelect.js
+    export const resetSelect = () => {
+        return {
+            type: RESET_SELECT
+        };
+    };
+
+    export const guardarFiltro = () => {
+        return {
+            type: GUARDA_FILTRO
+        }
+    }
+  
